@@ -2,6 +2,10 @@
   <div class="container mt-4">
     <h2 class="mb-3">ตารางครุภัณฑ์</h2>
 
+    <!-- 🔹 ปุ่มเพิ่ม + ตัวเลือกจำนวนแถว -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <button class="btn btn-primary" @click="openAddModal">เพิ่มครุภัณฑ์</button>
+
       <div class="d-flex align-items-center">
         <label class="me-2">แสดงแถวต่อหน้า:</label>
         <select v-model.number="itemsPerPage" class="form-select w-auto">
@@ -10,6 +14,7 @@
           <option :value="20">20</option>
         </select>
       </div>
+    </div>
 
     <!-- 🏷️ ปุ่มกรองหมวดหมู่ -->
     <div class="mb-3">
@@ -44,6 +49,7 @@
           <th>วันที่ซื้อ</th>
           <th>ราคา</th>
           <th>รูปภาพ</th>
+          <th>การจัดการ</th>
         </tr>
       </thead>
       <tbody>
@@ -64,6 +70,14 @@
               alt="รูปครุภัณฑ์"
             />
             <span v-else class="text-muted">ไม่มีรูป</span>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-warning btn-sm me-2" @click="openEditModal(asset)">
+              <i class="bi bi-pencil-square"></i> แก้ไข
+            </button>
+            <button class="btn btn-danger btn-sm" @click="deleteAsset(asset.asset_id)">
+              <i class="bi bi-trash3"></i> ลบ
+            </button>
           </td>
         </tr>
       </tbody>
@@ -94,7 +108,74 @@
       </ul>
     </nav>
 
-</div>
+    <!-- ✅ Modal ใช้ทั้งเพิ่ม / แก้ไข -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">{{ isEditMode ? "แก้ไขครุภัณฑ์" : "เพิ่มครุภัณฑ์ใหม่" }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div>
+              <div class="mb-3">
+                <label class="form-label">รหัสครุภัณฑ์</label>
+                <input v-model="editForm.asset_code" type="text" class="form-control" required maxlength="50" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">ชื่อครุภัณฑ์</label>
+                <input v-model="editForm.asset_name" type="text" class="form-control" required maxlength="255" />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">หมวดหมู่</label>
+                <select v-model="editForm.category_id" class="form-select" required>
+                  <option value="">-- เลือกหมวดหมู่ --</option>
+                  <option v-for="category in categories" :key="category" :value="category">
+                    {{ category }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">วันที่ซื้อ</label>
+                <input v-model="editForm.purchase_date" type="date" class="form-control" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">ราคา (บาท)</label>
+                <input v-model="editForm.price" type="number" step="0.01" class="form-control" required />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">รูปภาพ</label>
+                <input
+                  type="file"
+                  @change="handleFileUpload"
+                  class="form-control"
+                  accept="image/*"
+                />
+                <div v-if="isEditMode && editForm.image">
+                  <p class="mt-2">รูปเดิม:</p>
+                  <img
+                    :src="'http://localhost:8081/asset/api_php/uploads/' + editForm.image"
+                    width="100"
+                    class="rounded"
+                    alt="รูปครุภัณฑ์เดิม"
+                  />
+                </div>
+              </div>
+
+              <button @click="saveAsset" class="btn btn-success">
+                {{ isEditMode ? "บันทึกการแก้ไข" : "บันทึกครุภัณฑ์ใหม่" }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -287,6 +368,7 @@ export default {
       categories,
       loading,
       error,
+      editForm,
       isEditMode,
       categoryFilter,
       formatDate,
@@ -294,8 +376,8 @@ export default {
       openAddModal,
       openEditModal,
       handleFileUpload,
-
-
+      saveAsset,
+      deleteAsset,
 
       // Pagination
       currentPage,

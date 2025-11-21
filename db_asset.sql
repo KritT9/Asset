@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2025 at 08:19 AM
+-- Generation Time: Nov 20, 2025 at 04:13 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -24,25 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
---
-
-CREATE TABLE `admin` (
-  `id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `admin`
---
-
-INSERT INTO `admin` (`id`, `username`, `password`) VALUES
-(1, 'admin', '1234');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `assets`
 --
 
@@ -57,6 +38,14 @@ CREATE TABLE `assets` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `assets`
+--
+
+INSERT INTO `assets` (`asset_id`, `asset_code`, `asset_name`, `category_id`, `purchase_date`, `price`, `image`, `created_at`) VALUES
+(24, 'AR999', 'แอร์', 'เครื่องใช้ไฟฟ้า', '2025-11-21', '5000.00', 'asset_1763650727_691f2ca7d1550.jpg', '2025-11-20 14:58:47'),
+(25, 'FN999', 'พัดลม', 'เครื่องใช้ไฟฟ้า', '2025-11-29', '2000.00', 'asset_1763651068_691f2dfc42da5.jpg', '2025-11-20 15:04:28');
+
 -- --------------------------------------------------------
 
 --
@@ -69,36 +58,28 @@ CREATE TABLE `asset_categories` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `asset_categories`
---
-
-INSERT INTO `asset_categories` (`category_id`, `category_name`, `created_at`) VALUES
-(1, 'ไม้', '2025-11-20 14:05:34'),
-(2, 'หิน', '2025-11-20 14:05:34'),
-(3, 'เหล็ก', '2025-11-20 14:05:57');
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Table structure for table `customers`
 --
 
-CREATE TABLE `users` (
-  `user_id` int(11) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `full_name` varchar(255) DEFAULT NULL,
-  `role` varchar(50) DEFAULT 'admin',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+CREATE TABLE `customers` (
+  `customer_id` int(11) NOT NULL,
+  `firstName` varchar(50) NOT NULL,
+  `lastName` varchar(50) NOT NULL,
+  `phone` varchar(15) NOT NULL,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(128) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data for table `customers`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password`, `full_name`, `role`, `created_at`) VALUES
-(1, 'admin', '$2y$10$tJ967sUe2iN4Gk.z.A.bQ.i/Nl3R6c2dI.O/y/YlFq.j8R4D.M', 'ผู้ดูแลระบบ', 'admin', '2025-11-20 14:39:55');
+INSERT INTO `customers` (`customer_id`, `firstName`, `lastName`, `phone`, `username`, `password`) VALUES
+(0, 'one', 'onew', '1', 'one', '$2y$10$FWNBJavDvVqOuNQfS6SscOdZzgEVYM3ywnDxZjFYf5LPoVUdnOC/i'),
+(0, 'kk', 'kj', '123', 'kk', '$2y$10$X5KTZlUexEo166wymqeIE.a7cPfWBYcyZYSevN41NDoej/GhgGulm');
 
 --
 -- Indexes for dumped tables
@@ -117,13 +98,6 @@ ALTER TABLE `asset_categories`
   ADD PRIMARY KEY (`category_id`);
 
 --
--- Indexes for table `users`
---
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `username` (`username`);
-
---
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -131,19 +105,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `asset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `asset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `asset_categories`
 --
 ALTER TABLE `asset_categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT for table `users`
---
-ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
